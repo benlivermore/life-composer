@@ -1,0 +1,25 @@
+{
+  "name": "life-composer",
+  "version": "0.0.0",
+  "private": true,
+
+  "scripts": {
+    "start": "node ./src/server",
+    "test": "mocha 'test/**/*.js'",
+    "pretest": "node ./beautify.js; jshint ."
+  },
+
+  "dependencies": {
+    "express": "~4.9.0",
+    "body-parser": "~1.8.1",
+    "mongodb": "~1.4.*",
+    "mongoose": "~3.8.*"
+  },
+  "devDependencies": {
+    "mocha": "2.0.*",
+    "chai": "1.1.*",
+    "supertest": "0.15.*",
+    "jshint": "2.5.*",
+    "beautify-z": "0.0.1"
+  }
+}
