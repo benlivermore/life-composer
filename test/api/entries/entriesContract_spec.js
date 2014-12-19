@@ -55,7 +55,7 @@ describe('POST /entries', function() {
         request(app)
             .post('/entries')
             .send({
-                entry: 'test post'
+                text: 'test post'
             })
             .expect(200)
             .end(function(err, response) {
@@ -64,7 +64,7 @@ describe('POST /entries', function() {
                 }
 
                 expect(response.body.createdDate).to.be.ok;
-                expect(response.body.body).to.equal("test post");
+                expect(response.body.text).to.equal("test post");
                 done();
             });
 

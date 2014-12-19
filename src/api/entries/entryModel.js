@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var EntrySchema = new mongoose.Schema({
-    body: String,
+    text: String,
     createdDate: Date
 });
 

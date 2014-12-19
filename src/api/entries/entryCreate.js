@@ -2,7 +2,7 @@ var EntryModel = require('./entryModel');
 
 function createEntry(request, response) {
     var postedEntry = new EntryModel({
-        body: request.body.entry,
+        text: request.body.text,
         createdDate: Date.now()
     });
 

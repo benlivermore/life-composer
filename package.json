@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "mocha": "2.0.*",
-    "chai": "1.1.*",
+    "chai": "*",
     "supertest": "0.15.*",
     "jshint": "2.5.*",
     "beautify-z": "0.0.1"
