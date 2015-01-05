@@ -1,5 +1,6 @@
 var expect = require('chai').expect,
-    isAnObjectDescribedBy = require('../src/isAnObjectDescribedBy');
+    isAnObjectDescribedBy = require('../src/isAnObjectDescribedBy').isAnObjectDescribedBy,
+    Descriptor = require('../src/isAnObjectDescribedBy').Descriptor;
 
 describe('isAnObjectDescribedBy', function() {
 
@@ -119,22 +120,37 @@ describe('isAnObjectDescribedBy', function() {
 
             expect(isAnObjectDescribedBy(objDeep, objectDescriptionDeep)).to.be.false();
         });
+
+        // it('should return false if function is not equivalent to a function in description', function() {
+        //     var obj = {
+        //             test: function() {}
+        //         },
+        //         objDescriptionWithFunction = {
+        //             test: function() {
+        //                 return true;
+        //             }
+        //         };
+
+        //     expect(isAnObjectDescribedBy(obj, objDescriptionWithFunction)).to.be.false();
+        // });
     });
 
     describe('when comparing by descriptive function', function() {
+
+
         it('should return true if function returns truthy value', function() {
             var obj = {
                     test: "not definition"
                 },
                 objDescriptionWithTrue = {
-                    test: function() {
+                    test: Descriptor(function() {
                         return true;
-                    }
+                    })
                 },
                 objDescriptionWithTruthy = {
-                    test: function() {
+                    test: Descriptor(function() {
                         return "truthy";
-                    }
+                    })
                 };
 
             expect(isAnObjectDescribedBy(obj, objDescriptionWithTrue)).to.be.true();
@@ -146,14 +162,14 @@ describe('isAnObjectDescribedBy', function() {
                     test: "not definition"
                 },
                 objDescriptionWithFalse = {
-                    test: function() {
+                    test: Descriptor(function() {
                         return false;
-                    }
+                    })
                 },
                 objDescriptionWithFalsy = {
-                    test: function() {
+                    test: Descriptor(function() {
                         return 0;
-                    }
+                    })
                 };
 
             expect(isAnObjectDescribedBy(obj, objDescriptionWithFalse)).to.be.false();
@@ -165,9 +181,9 @@ describe('isAnObjectDescribedBy', function() {
                     test: "my test value"
                 },
                 objectDescription = {
-                    test: function(objValue) {
+                    test: Descriptor(function(objValue) {
                         return objValue === "my test value";
-                    }
+                    })
                 };
 
             expect(isAnObjectDescribedBy(obj, objectDescription)).to.be.true();
@@ -178,9 +194,9 @@ describe('isAnObjectDescribedBy', function() {
                     test: "my test value"
                 },
                 objectDescription = {
-                    test: function(objValue) {
+                    test: Descriptor(function(objValue) {
                         return objValue === "some other value";
-                    }
+                    })
                 };
 
             expect(isAnObjectDescribedBy(obj, objectDescription)).to.be.false();

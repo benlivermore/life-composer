@@ -3,36 +3,12 @@ var request = require('supertest'),
     composerAPI = require('../../../src/app'),
     chai = require("chai"),
     expect = chai.expect,
-    describeByPlugin = require('../../../src/chai-plugin-example'),
+    describeByPlugin = require('../../../src/chai-describer'),
     MongoClient = require('mongodb').MongoClient,
     app = composerAPI.start('mongodb://localhost/test', 3000),
     testDB;
 
 chai.use(describeByPlugin);
-
-//expect style
-//expect(obj).to.be.described.By(description);
-
-//isAnObjectDescribedBy(obj, description);
-
-//basic object description by equivalence
-// description = {
-//     test: "test"
-// };
-
-// //nested object description
-// description = {
-//     test: {
-//         test2: "test2"
-//     }
-// };
-
-// //object description by function
-// description = {
-//     test: function(valueToTest) {
-//         return valueToTest = "my description";
-//     }
-// }
 
 before(function(done) {
     MongoClient.connect("mongodb://localhost/test", function(err, db) {
@@ -93,9 +69,9 @@ describe('POST /entries', function() {
                 expect({
                     test: "you"
                 }).to.be.describedBy({
-                    test: function() {
+                    test: describeByPlugin.Descriptor(function() {
                         return true;
-                    }
+                    })
                 });
                 expect(response.body.createdDate).to.be.ok;
                 expect(response.body.text).to.equal("test post");

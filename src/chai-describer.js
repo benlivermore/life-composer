@@ -1,4 +1,4 @@
-var isAnObjectDescribedBy = require('./isAnObjectDescribedBy');
+var isAnObjectDescribedBy = require('./isAnObjectDescribedBy').isAnObjectDescribedBy;
 
 // expect(obj).to.be.described.By(description);
 function describedByPlugin(_chai, utils) {
@@ -14,5 +14,5 @@ function describedByPlugin(_chai, utils) {
     });
 
 }
-
+describedByPlugin.Descriptor = require('./isAnObjectDescribedBy').Descriptor;
 module.exports = describedByPlugin;

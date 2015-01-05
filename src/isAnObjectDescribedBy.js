@@ -1,21 +1,28 @@
 var _ = require('underscore');
 
-function isEquivalentIgnoringFunctions(val, description) {
-    return typeof description === "function" || _.isEqual(val, description);
+function isEquivalentOrDescriptor(val, description) {
+    return description instanceof Descriptor || _.isEqual(val, description);
+}
+
+function Descriptor(doesMatch) {
+    this.doesMatch = function(obj) {
+        return Boolean(doesMatch(obj));
+    };
 }
 
 function isAnObjectDescribedBy(obj, objDescription) {
     var matchesDescription = true;
 
-    matchesDescription = !_.some(obj, function(val, key) {
-        return !isEquivalentIgnoringFunctions(val, objDescription[key]);
+    matchesDescription = _.every(obj, function(val, key) {
+        return isEquivalentOrDescriptor(val, objDescription[key]);
     });
 
     if (matchesDescription) {
         matchesDescription = _.every(objDescription, function(descriptor, descriptorKey) {
             var objectVal = obj[descriptorKey];
-            if (typeof descriptor === "function") {
-                return Boolean(descriptor(objectVal));
+
+            if (descriptor instanceof Descriptor) {
+                return descriptor.doesMatch(objectVal);
             } else {
                 return obj.hasOwnProperty(descriptorKey);
             }
@@ -26,4 +33,16 @@ function isAnObjectDescribedBy(obj, objDescription) {
 
 }
 
-module.exports = isAnObjectDescribedBy;
+function createDescriptor(doesMatch) {
+    //use Object.create instead?
+    var descriptor = new Descriptor(doesMatch);
+    return descriptor;
+}
+
+
+
+
+module.exports = {
+    isAnObjectDescribedBy: isAnObjectDescribedBy,
+    Descriptor: createDescriptor
+};
