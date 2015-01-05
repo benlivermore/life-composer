@@ -121,18 +121,31 @@ describe('isAnObjectDescribedBy', function() {
             expect(isAnObjectDescribedBy(objDeep, objectDescriptionDeep)).to.be.false();
         });
 
-        // it('should return false if function is not equivalent to a function in description', function() {
-        //     var obj = {
-        //             test: function() {}
-        //         },
-        //         objDescriptionWithFunction = {
-        //             test: function() {
-        //                 return true;
-        //             }
-        //         };
+        it('should return true if function is equivalent to a function in description', function() {
+            var equivalentFunc = function() {},
+                obj = {
+                    test: equivalentFunc
+                },
+                objDescriptionWithFunction = {
+                    test: equivalentFunc
+                };
 
-        //     expect(isAnObjectDescribedBy(obj, objDescriptionWithFunction)).to.be.false();
-        // });
+            expect(isAnObjectDescribedBy(obj, objDescriptionWithFunction)).to.be.true();
+        });
+
+
+        it('should return false if function is not equivalent to a function in description', function() {
+            var obj = {
+                    test: function() {}
+                },
+                objDescriptionWithFunction = {
+                    test: function() {
+                        return true;
+                    }
+                };
+
+            expect(isAnObjectDescribedBy(obj, objDescriptionWithFunction)).to.be.false();
+        });
     });
 
     describe('when comparing by descriptive function', function() {
