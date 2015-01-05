@@ -8,7 +8,11 @@ function createEntry(request, response) {
 
     postedEntry.save(function(err) {
         if (!err) {
-            return response.json(postedEntry);
+            return response.json({
+                id: postedEntry._id,
+                text: postedEntry.text,
+                createdDate: postedEntry.createdDate
+            });
         } else {
             return response.json({
                 error: "problem"

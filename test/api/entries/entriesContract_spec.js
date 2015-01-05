@@ -4,6 +4,7 @@ var request = require('supertest'),
     chai = require("chai"),
     expect = chai.expect,
     describeByPlugin = require('../../../src/chai-describer'),
+    Descriptor = describeByPlugin.Descriptor,
     MongoClient = require('mongodb').MongoClient,
     app = composerAPI.start('mongodb://localhost/test', 3000),
     testDB;
@@ -66,15 +67,17 @@ describe('POST /entries', function() {
                 if (err) {
                     return done(err);
                 }
-                expect({
-                    test: "you"
-                }).to.be.describedBy({
-                    test: describeByPlugin.Descriptor(function() {
-                        return true;
+                expect(response.body).to.be.describedBy({
+                    createdDate: Descriptor(function(val) {
+                        return !!val;
+                    }),
+                    text: "test post",
+                    id: Descriptor(function(val) {
+                        return val.length > 0;
                     })
+
                 });
-                expect(response.body.createdDate).to.be.ok;
-                expect(response.body.text).to.equal("test post");
+
                 done();
             });
 
