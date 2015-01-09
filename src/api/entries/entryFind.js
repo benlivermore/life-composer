@@ -30,6 +30,24 @@ function findAllEntries(req, res) {
     });
 }
 
+function findOneEntry(req, res) {
+    var id = req.params.id;
+
+    return EntryModel.findById(id, function(err, entry) {
+        var entryJson;
+
+        if (!err) {
+            entryJson = cleanEntry(entry);
+            res.json(entryJson);
+        } else {
+            res.json({
+                error: 'error'
+            });
+        }
+    });
+}
+
 module.exports = {
-    findAll: findAllEntries
+    findAll: findAllEntries,
+    findOne: findOneEntry
 };

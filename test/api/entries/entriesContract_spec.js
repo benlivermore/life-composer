@@ -7,7 +7,9 @@ var request = require('supertest'),
     Descriptor = describeByPlugin.Descriptor,
     MongoClient = require('mongodb').MongoClient,
     app = composerAPI.start('mongodb://localhost/test', 3000),
-    testDB;
+    testDB,
+    expectedEntry1,
+    expectedEntry2;
 
 chai.use(describeByPlugin);
 
@@ -34,17 +36,24 @@ beforeEach(function(done) {
                 "createdDate": Date.now(),
                 "extraneous": 'property'
 
-            }, function() {});
+            }, function(err, data) {
+                expectedEntry1 = data[0];
 
-            collection.insert({
-                "text": "entry 2",
-                "date": '1420785000000',
-                "createdDate": Date.now(),
-                "extraneous": 'property'
+                collection.insert({
+                    "text": "entry 2",
+                    "date": "1420785000000",
+                    "createdDate": Date.now(),
+                    "extraneous": 'property'
 
-            }, function() {});
+                }, function(err, data) {
+                    expectedEntry2 = data[0];
+                    done();
+                });
+            });
 
-            done();
+
+
+
         });
 
     });
@@ -58,7 +67,7 @@ afterEach(function(done) {
 });
 
 describe('GET /entries', function() {
-    it('respond with a the list of all entries', function(done) {
+    it('respond with a the list of all entries if no id given', function(done) {
         request(app)
             .get('/entries')
             .expect(200)
@@ -71,22 +80,71 @@ describe('GET /entries', function() {
                 entry2 = response.body[1];
 
                 expect(entry1).to.be.describedBy({
-                    createdDate: Descriptor(function(val) {
-                        return !!val;
-                    }),
+                    createdDate: Descriptor.Date,
                     text: "entry 1",
                     date: "2015-01-09T06:13:29.676Z",
-                    id: Descriptor(function(val) {
-                        return val.length > 0;
-                    })
+                    id: Descriptor.String
                 });
 
                 expect(entry2).to.be.describedBy({
+                    createdDate: Descriptor.Date,
+                    text: "entry 2",
+                    date: "2015-01-09T06:30:00.000Z",
+                    id: Descriptor.String
+                });
+
+                done();
+            });
+
+    });
+
+    it('respond with a specific entry if valid id given', function(done) {
+        request(app)
+            .get('/entries/' + expectedEntry1._id)
+            .expect(200)
+            .end(function(err, response) {
+                expect(response.body).to.be.describedBy({
+                    createdDate: Descriptor.Date,
+                    text: "entry 1",
+                    date: "2015-01-09T06:13:29.676Z",
+                    id: expectedEntry1._id.toString()
+                });
+
+                done();
+            });
+    });
+
+
+});
+
+describe('When the page does not exist', function() {
+    it('respond with 404', function(done) {
+        request(app)
+            .get('/nothing')
+            .expect(404, done);
+    });
+});
+
+describe('POST /entries', function() {
+    it('respond with 200', function(done) {
+        request(app)
+            .post('/entries')
+            .send({
+                text: 'test post',
+                date: '1420491945907'
+            })
+            .expect(200)
+            .end(function(err, response) {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(response.body).to.be.describedBy({
                     createdDate: Descriptor(function(val) {
                         return !!val;
                     }),
-                    text: "entry 2",
-                    date: "2015-01-09T06:30:00.000Z",
+                    text: "test post",
+                    date: "2015-01-05T21:05:45.907Z",
                     id: Descriptor(function(val) {
                         return val.length > 0;
                     })
@@ -95,46 +153,6 @@ describe('GET /entries', function() {
                 done();
             });
 
-    });
 
-
-    describe('When the page does not exist', function() {
-        it('respond with 404', function(done) {
-            request(app)
-                .get('/nothing')
-                .expect(404, done);
-        });
-    });
-
-    describe('POST /entries', function() {
-        it('respond with 200', function(done) {
-            request(app)
-                .post('/entries')
-                .send({
-                    text: 'test post',
-                    date: '1420491945907'
-                })
-                .expect(200)
-                .end(function(err, response) {
-                    if (err) {
-                        return done(err);
-                    }
-
-                    expect(response.body).to.be.describedBy({
-                        createdDate: Descriptor(function(val) {
-                            return !!val;
-                        }),
-                        text: "test post",
-                        date: "2015-01-05T21:05:45.907Z",
-                        id: Descriptor(function(val) {
-                            return val.length > 0;
-                        })
-                    });
-
-                    done();
-                });
-
-
-        });
     });
 });
