@@ -1,7 +1,8 @@
 var express = require('express'),
     EntryModel = require('./entryModel'),
     findAllEntries = require('./entryFind').findAll,
-    findOne = require('./entryFind').findOne,
+    findOneEntry = require('./entryFind').findOne,
+    updateOneEntry = require('./entryUpdate').updateOne,
     createEntry = require('./entryCreate').create,
     isValidMongoId = require('mongoose').Types.ObjectId.isValid,
     entryRouter = express.Router(),
@@ -12,7 +13,8 @@ entryRoute = entryRouter.route('/');
 entryRouteWithId = entryRouter.route('/:id');
 
 entryRoute.get(findAllEntries);
-entryRouteWithId.get(findOne);
+entryRouteWithId.get(findOneEntry);
 entryRoute.post(createEntry);
+entryRouteWithId.put(updateOneEntry);
 
 module.exports = entryRouter;

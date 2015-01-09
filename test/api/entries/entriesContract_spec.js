@@ -100,14 +100,14 @@ describe('GET /entries', function() {
 
     it('respond with a specific entry if valid id given', function(done) {
         request(app)
-            .get('/entries/' + expectedEntry1._id)
+            .get('/entries/' + expectedEntry2._id)
             .expect(200)
             .end(function(err, response) {
                 expect(response.body).to.be.describedBy({
                     createdDate: Descriptor.Date,
-                    text: "entry 1",
-                    date: "2015-01-09T06:13:29.676Z",
-                    id: expectedEntry1._id.toString()
+                    text: "entry 2",
+                    date: "2015-01-09T06:30:00.000Z",
+                    id: expectedEntry2._id.toString()
                 });
 
                 done();
@@ -148,6 +148,35 @@ describe('POST /entries', function() {
                     id: Descriptor(function(val) {
                         return val.length > 0;
                     })
+                });
+
+                done();
+            });
+
+
+    });
+});
+
+describe('PUT /entries/:id', function() {
+    it('update a specific entry with new data', function(done) {
+        var expectedEntry2Id = expectedEntry2._id.toString();
+
+        request(app)
+            .put('/entries/' + expectedEntry2Id)
+            .send({
+                date: '1420000000000' //2014-12-31T04:26:40.000Z
+            })
+            .expect(200)
+            .end(function(err, response) {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(response.body).to.be.describedBy({
+                    createdDate: Descriptor.Date,
+                    text: "entry 2",
+                    date: "2014-12-31T04:26:40.000Z",
+                    id: expectedEntry2Id
                 });
 
                 done();
