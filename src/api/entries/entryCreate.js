@@ -3,6 +3,7 @@ var EntryModel = require('./entryModel');
 function createEntry(request, response) {
     var postedEntry = new EntryModel({
         text: request.body.text,
+        date: request.body.date,
         createdDate: Date.now()
     });
 
@@ -11,6 +12,7 @@ function createEntry(request, response) {
             return response.json({
                 id: postedEntry._id,
                 text: postedEntry.text,
+                date: postedEntry.date,
                 createdDate: postedEntry.createdDate
             });
         } else {

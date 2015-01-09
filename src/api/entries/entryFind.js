@@ -4,7 +4,9 @@ var EntryModel = require('./entryModel');
 function cleanEntry(entry) {
     return {
         id: entry._id,
-        text: entry.text || ""
+        text: entry.text || "",
+        date: entry.date,
+        createdDate: entry.createdDate
     };
 }
 
