@@ -1,18 +1,9 @@
 var EntryModel = require('./entryModel');
 
 
-function cleanEntry(entry) {
-    return {
-        id: entry._id,
-        text: entry.text || "",
-        date: entry.date,
-        createdDate: entry.createdDate
-    };
-}
-
 function cleanAllEntries(entries) {
     return entries.map(function(entry) {
-        return cleanEntry(entry);
+        return EntryModel.cleanEntry(entry);
     });
 }
 
@@ -37,7 +28,7 @@ function findOneEntry(req, res) {
         var entryJson;
 
         if (!err) {
-            entryJson = cleanEntry(entry);
+            entryJson = EntryModel.cleanEntry(entry);
             res.json(entryJson);
         } else {
             res.json({
